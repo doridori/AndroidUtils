@@ -40,18 +40,19 @@ import com.example.androidutils.app.R;
  *
  * Will auto hide all children on start<p/>
  *
- * <b>WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
- * <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
- * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
- * to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
- * to do with view invlidation as a PTR etc will then show the view<p/>
- *
  * Animations can be setup but using layoutTransitions = true in the manifest (unless they have been globally disabled in the user settings)<p/>
  *
  * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
  */
 public class FrameLayoutWithState extends FrameLayout
 {
+    /**
+     * WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
+     * <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
+     * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
+     * to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
+     * to do with view invlidation as a PTR etc will then show the view<p/>
+     */
     private static final int HIDDEN_VIEW_STATE = View.INVISIBLE;
 
     private ViewState mCurrentViewState = ViewState.NOT_INIT;
