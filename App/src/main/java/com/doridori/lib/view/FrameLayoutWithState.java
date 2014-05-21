@@ -28,49 +28,28 @@ import com.example.androidutils.app.R;
 
 
 /**
-* <p>Copyright (C) 2011 Dorian Cussen </p>
-*
-* <p>Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at</p>
-*
-*      <p>http://www.apache.org/licenses/LICENSE-2.0</p>
-*
-* <p>Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.</p>
-*
-*
-* Like a normal frameLayout apart from this will swap out its views
-* depending on some data state.
-*
-* You should pass in layout file ids to the empty and loading resId xml
-* attrbutes and an id into the content view attr
-*
-* If you supply your own error layout it must have a textView with the id
-* 'state_error_text'
-*
-* If your going to use the same loading / error / empty views (with differnt text) just set them in the source below and make sure the contents ids for the textViews match
-*
-* Will auto hide all children on start
-*
-* <b>WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
-* <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
-* (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
-* to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
-* to do with view invlidation as a PTR etc will then show the view
-*
-* Animations can be setup but using layoutTransitions = true in the manifest (unless they have been globally disabled in the user settings)
-*
-* If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved
-*
-* TODO: should add the child views the same way as done for AOSP views i.e https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/core/java/android/widget/DatePicker.java - and not via a post in onLayout. Causing issues like not being abel to grab child views after setContentView is called and also showing two states at once etc
-*
-* TODO: should add children as xml (could use include) and either use id in paretn to specify type or attributes on children - then dont have to mess around with programming view adding and just rely on normal inflate
-*
-*/
+ * Like a normal frameLayout apart from this will swap out its views
+ * depending on some data state.<p/>
+ *
+ * You should pass in layout file ids to the empty and loading resId xml
+ * attrbutes and an id into the content view attr<p/>
+ *
+ * If you supply your own error layout it must have a textView with the id 'R.id.state_error_text'<p/>
+ *
+ * If your going to use the same loading / error / empty views throughout the app (with differnt text) just set them in the source below and make sure the contents ids for the textViews match. Could make this better by setting default layout id in theme. Can apply in style also.<p/>
+ *
+ * Will auto hide all children on start<p/>
+ *
+ * <b>WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
+ * <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
+ * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
+ * to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
+ * to do with view invlidation as a PTR etc will then show the view<p/>
+ *
+ * Animations can be setup but using layoutTransitions = true in the manifest (unless they have been globally disabled in the user settings)<p/>
+ *
+ * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
+ */
 public class FrameLayoutWithState extends FrameLayout
 {
     private static final int HIDDEN_VIEW_STATE = View.INVISIBLE;
@@ -106,20 +85,31 @@ public class FrameLayoutWithState extends FrameLayout
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FrameLayoutWithState);
 
         // get state layout res id's if present, else use default
-        mEmptyResId = array.getResourceId(R.styleable.FrameLayoutWithState_emptyView,
+        mEmptyResId = array.getResourceId(
+                R.styleable.FrameLayoutWithState_emptyView,
                 R.layout.element_data_state_empty);
-        mLoadingResId = array.getResourceId(R.styleable.FrameLayoutWithState_loadingView,
+
+        mLoadingResId = array.getResourceId(
+                R.styleable.FrameLayoutWithState_loadingView,
                 R.layout.element_data_state_loading);
-        mErrorResId = array.getResourceId(R.styleable.FrameLayoutWithState_errorView,
+
+        mErrorResId = array.getResourceId(
+                R.styleable.FrameLayoutWithState_errorView,
                 R.layout.element_data_state_error);
 
-        if (array.hasValue(R.styleable.FrameLayoutWithState_contentView) == false)
+        if (!array.hasValue(R.styleable.FrameLayoutWithState_contentView))
             throw new RuntimeException("need to set contentView attr");
         mContentResId = array.getResourceId(R.styleable.FrameLayoutWithState_contentView, -1);
 
         array.recycle();
     }
 
+
+    /**
+     * adds the child views the same way as done for AOSP views i.e
+     * <a href='https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/core/java/android/widget/DatePicker.java'>DatePicker.java</a>.
+     * Good approach for custom compound views
+     */
     private void inflateStateViews() {
 
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -297,7 +287,7 @@ public class FrameLayoutWithState extends FrameLayout
         /**
          * Loading finished with error
          */
-        ERROR;
+        ERROR
     }
 
 }
