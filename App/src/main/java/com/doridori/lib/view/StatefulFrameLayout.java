@@ -44,7 +44,7 @@ import com.example.androidutils.app.R;
  *
  * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
  */
-public class FrameLayoutWithState extends FrameLayout
+public class StatefulFrameLayout extends FrameLayout
 {
     /**
      * WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
@@ -56,26 +56,27 @@ public class FrameLayoutWithState extends FrameLayout
     private static final int HIDDEN_VIEW_STATE = View.INVISIBLE;
 
     private ViewState mCurrentViewState = ViewState.NOT_INIT;
+
     private int mLoadingResId, mEmptyResId, mContentResId, mErrorResId;
     private View mLoadingView, mEmptyView, mContentView, mErrorView;
     private String mErrorText = null;
     private String mEmptyText;
 
-    public FrameLayoutWithState(Context context, AttributeSet attrs, int defStyle) {
+    public StatefulFrameLayout(Context context, AttributeSet attrs, int defStyle) {
 
         super(context, attrs, defStyle);
         getCustomAttrs(context, attrs);
         inflateStateViews();
     }
 
-    public FrameLayoutWithState(Context context, AttributeSet attrs) {
+    public StatefulFrameLayout(Context context, AttributeSet attrs) {
 
         super(context, attrs);
         getCustomAttrs(context, attrs);
         inflateStateViews();
     }
 
-    public FrameLayoutWithState(Context context) {
+    public StatefulFrameLayout(Context context) {
 
         super(context);
         throw new RuntimeException("Use a constructor with attrs");
@@ -272,7 +273,7 @@ public class FrameLayoutWithState extends FrameLayout
         /**
          * Loading has not started yet
          */
-        NOT_INIT,
+        NOT_INIT, //default
         /**
          * Loading started
          */
