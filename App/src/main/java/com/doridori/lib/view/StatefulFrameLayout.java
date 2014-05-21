@@ -84,24 +84,24 @@ public class StatefulFrameLayout extends FrameLayout
 
     private void getCustomAttrs(Context context, AttributeSet attrs) {
 
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FrameLayoutWithState);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.StatefulFrameLayout);
 
         // get state layout res id's if present, else use default
         mEmptyResId = array.getResourceId(
-                R.styleable.FrameLayoutWithState_emptyView,
+                R.styleable.StatefulFrameLayout_emptyView,
                 R.layout.element_data_state_empty);
 
         mLoadingResId = array.getResourceId(
-                R.styleable.FrameLayoutWithState_loadingView,
+                R.styleable.StatefulFrameLayout_loadingView,
                 R.layout.element_data_state_loading);
 
         mErrorResId = array.getResourceId(
-                R.styleable.FrameLayoutWithState_errorView,
+                R.styleable.StatefulFrameLayout_errorView,
                 R.layout.element_data_state_error);
 
-        if (!array.hasValue(R.styleable.FrameLayoutWithState_contentView))
+        if (!array.hasValue(R.styleable.StatefulFrameLayout_contentView))
             throw new RuntimeException("need to set contentView attr");
-        mContentResId = array.getResourceId(R.styleable.FrameLayoutWithState_contentView, -1);
+        mContentResId = array.getResourceId(R.styleable.StatefulFrameLayout_contentView, -1);
 
         array.recycle();
     }

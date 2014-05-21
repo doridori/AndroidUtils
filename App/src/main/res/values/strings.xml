@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <!-- FrameLayoutWithState default messages -->
+    <!-- StatefulFrameLayout default messages -->
     <string name="state_loading">Loading, please wait</string>
     <string name="state_empty">Empty data set</string>
     <string name="state_error">Error loading data \nPlease check your data connection</string>
