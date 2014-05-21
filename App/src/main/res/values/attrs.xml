@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- StatefulFrameLayout -->
-  <declare-styleable name="StatefulFrameLayout">
-    <attr name="loadingView" format="reference" />
-    <attr name="emptyView" format="reference" />
-    <attr name="contentView" format="reference" />
-    <attr name="errorView" format="reference" />
-  </declare-styleable>
+    <!-- StatefulFrameLayout -->
+    <declare-styleable name="StatefulFrameLayout">
+        <attr name="loadingView" format="reference"/>
+        <attr name="emptyView" format="reference"/>
+        <attr name="contentView" format="reference"/>
+        <attr name="errorView" format="reference"/>
+    </declare-styleable>
+
+    <!-- AspectImageView -->
+    <declare-styleable name="AspectImageView">
+        <!-- allows the height to be specified as a function of view width. Use a float ratio-->
+        <attr name="heightFactor" format="float"/>
+    </declare-styleable>
 
 </resources>
