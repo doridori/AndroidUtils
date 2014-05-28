@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
+/**
+ * Sometimes its helpful to be able to grab device pxl data from the context alone
+ */
 public class DisplayUtils
 {
     /**
@@ -43,7 +46,7 @@ public class DisplayUtils
         {
             case Configuration.ORIENTATION_LANDSCAPE:
                 return Math.max(widthPixels, heightPixels);
-            case Configuration.ORIENTATION_PORTRAIT;
+            case Configuration.ORIENTATION_PORTRAIT:
                 return Math.min(widthPixels, heightPixels);
             default: //fallback
                 XLog.w("undefined orientation!");
