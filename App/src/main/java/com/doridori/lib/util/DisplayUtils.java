@@ -47,7 +47,7 @@ public class DisplayUtils
         return smallestWidth;
     }
 
-    public static float getCurrentOrientationWidth(Context context)
+    public static int getCurrentOrientationWidth(Context context)
     {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 
