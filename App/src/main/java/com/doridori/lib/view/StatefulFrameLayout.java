@@ -43,6 +43,8 @@ import com.example.androidutils.app.R;
  * Animations can be setup but using layoutTransitions = true in the manifest (unless they have been globally disabled in the user settings)<p/>
  *
  * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
+ *
+ * Similar to https://github.com/medyo/dynamicbox
  */
 public class StatefulFrameLayout extends FrameLayout
 {

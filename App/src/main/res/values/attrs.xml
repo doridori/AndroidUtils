@@ -13,6 +13,8 @@
     <declare-styleable name="AspectImageView">
         <!-- allows the height to be specified as a function of view width. Use a float ratio-->
         <attr name="heightFactor" format="float"/>
+        <!-- allows the width to be specified as a function of view height. Use a float ratio-->
+        <attr name="widthFactor" format="float"/>
     </declare-styleable>
 
 </resources>

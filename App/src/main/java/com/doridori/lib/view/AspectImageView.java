@@ -16,11 +16,11 @@ public class AspectImageView extends ImageView
      * the height as a function of width
      */
     private float mHeightFactor;
+    private float mWidthFactor;
 
     public AspectImageView(Context context)
     {
-        super(context);
-        throw new RuntimeException("Use a constructor with attrs");
+        this(context, null);
     }
 
     public AspectImageView(Context context, AttributeSet attrs)
@@ -29,17 +29,15 @@ public class AspectImageView extends ImageView
         getCustomAttrs(context, attrs);
     }
 
-    public AspectImageView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        getCustomAttrs(context, attrs);
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), (int) (getMeasuredWidth() * mHeightFactor));
+
+        if(mHeightFactor > 0)
+            setMeasuredDimension(getMeasuredWidth(), (int) (getMeasuredWidth() * mHeightFactor));
+        if(mWidthFactor > 0)
+            setMeasuredDimension((int) (getMeasuredHeight()*mWidthFactor), getMeasuredHeight());
     }
 
     private void getCustomAttrs(Context context, AttributeSet attrs) {
@@ -51,8 +49,15 @@ public class AspectImageView extends ImageView
                 R.styleable.AspectImageView_heightFactor,
                 -1);
 
-        if(mHeightFactor <= 0)
-            throw new RuntimeException("you must set the 'heightFactor' xml attr and is must be greater than 0");
+        mWidthFactor = array.getFloat(
+                R.styleable.AspectImageView_widthFactor,
+                -1);
+
+        if(mHeightFactor <= 0 && mWidthFactor <= 0)
+            throw new RuntimeException("you must set the 'heightFactor' || 'widthFactor' xml attr and it must be greater than 0");
+
+        if(mHeightFactor > 0 && mWidthFactor > 0)
+            throw new RuntimeException("you can only set one aspect xml attr");
 
         array.recycle();
     }
