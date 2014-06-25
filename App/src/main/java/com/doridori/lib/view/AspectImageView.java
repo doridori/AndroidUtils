@@ -29,16 +29,40 @@ public class AspectImageView extends ImageView
         getCustomAttrs(context, attrs);
     }
 
+    //======================================================================================================
+    // OVERRIDES
+    //======================================================================================================
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        throwIfFieldsNotSet();
 
         if(mHeightFactor > 0)
             setMeasuredDimension(getMeasuredWidth(), (int) (getMeasuredWidth() * mHeightFactor));
         if(mWidthFactor > 0)
             setMeasuredDimension((int) (getMeasuredHeight()*mWidthFactor), getMeasuredHeight());
     }
+
+    //======================================================================================================
+    // SETTERS
+    //======================================================================================================
+
+    public void setHeightFactor(float heightFactor)
+    {
+        mHeightFactor = heightFactor;
+    }
+
+    public void setWidthFactor(float widthFactor)
+    {
+        mWidthFactor = widthFactor;
+    }
+
+    //======================================================================================================
+    // PRIVATE
+    //======================================================================================================
 
     private void getCustomAttrs(Context context, AttributeSet attrs) {
 
@@ -53,12 +77,15 @@ public class AspectImageView extends ImageView
                 R.styleable.AspectImageView_widthFactor,
                 -1);
 
+        array.recycle();
+    }
+
+    private void throwIfFieldsNotSet()
+    {
         if(mHeightFactor <= 0 && mWidthFactor <= 0)
-            throw new RuntimeException("you must set the 'heightFactor' || 'widthFactor' xml attr and it must be greater than 0");
+            throw new RuntimeException("you must set the 'heightFactor' || 'widthFactor' via setter or xml attr and it must be greater than 0");
 
         if(mHeightFactor > 0 && mWidthFactor > 0)
             throw new RuntimeException("you can only set one aspect xml attr");
-
-        array.recycle();
     }
 }
