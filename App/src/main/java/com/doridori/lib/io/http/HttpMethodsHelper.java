@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Deprecated - use OkHttp 2.0 instead
+ *
  * Convenience methods for Http method calls. Removes a bit of boilerplate code and IMHO makes HttpUrlConnection easier to work with. Also handles posting multipart data :)
  *
  * You can use this with OkHttp by just calling OkHttpClient.open(url) and passing that in here.
@@ -33,6 +35,7 @@ import java.util.Map;
  *
  * @author dorian cussen
  */
+@Deprecated
 public class HttpMethodsHelper
 {
     //============================================================================================================

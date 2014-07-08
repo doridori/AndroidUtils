@@ -18,6 +18,8 @@ package com.doridori.lib.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +66,10 @@ public class StatefulFrameLayout extends FrameLayout
     private String mErrorText = null;
     private String mEmptyText;
 
+    //=====================================================================================
+    // CONSTRUCTORS
+    //=====================================================================================
+
     public StatefulFrameLayout(Context context, AttributeSet attrs, int defStyle) {
 
         super(context, attrs, defStyle);
@@ -83,6 +89,90 @@ public class StatefulFrameLayout extends FrameLayout
         super(context);
         throw new RuntimeException("Use a constructor with attrs");
     }
+
+    //=====================================================================================
+    // SAVED STATE
+    //=====================================================================================
+
+    @Override
+    protected Parcelable onSaveInstanceState()
+    {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState savedState = new SavedState(superState);
+        savedState.mCurrentViewState = this.mCurrentViewState;
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state)
+    {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState)state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        mCurrentViewState = ss.mCurrentViewState;
+        setViewState(mCurrentViewState);
+    }
+
+    /**
+     * User interface state that is stored by TextView for implementing
+     * {@link View#onSaveInstanceState}.
+     */
+    public static class SavedState extends BaseSavedState
+    {
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>()
+        {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+
+        private ViewState mCurrentViewState;
+
+        /**
+         * Use when saving out
+         */
+        SavedState(Parcelable superState)
+        {
+            super(superState);
+        }
+
+        /**
+         * Used when restoring
+         */
+        private SavedState(Parcel in) {
+            super(in);
+            mCurrentViewState = (ViewState) in.readSerializable();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags)
+        {
+            super.writeToParcel(out, flags);
+            out.writeSerializable(mCurrentViewState);
+        }
+
+        @Override
+        public String toString()
+        {
+            String str = "StatefulFrameLayout.SavedState{"
+                    + Integer.toHexString(System.identityHashCode(this))
+                    + " currentState="+ mCurrentViewState;
+            return str + "}";
+        }
+    }
+
+    //=====================================================================================
+    // OTHERS
+    //=====================================================================================
 
     private void getCustomAttrs(Context context, AttributeSet attrs) {
 
@@ -221,7 +311,7 @@ public class StatefulFrameLayout extends FrameLayout
             }
 
             if(mContentView.getVisibility() == View.VISIBLE)
-                throw new RuntimeException("need to set to hidden state in xml or will flicker");
+                throw new RuntimeException("need to set child view to hidden (GONE | INVISIBLE) state in xml or will flicker");
         }
 
         switch (mCurrentViewState) {
