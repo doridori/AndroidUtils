@@ -24,6 +24,8 @@ import android.net.NetworkInfo;
  *
  * <p><b>make sure to read the doc for {@link #register(android.content.Context)} also before using</b></p>
  *
+ *  Note this is sticky
+ * 
  * User: doriancussen
  * Date: 31/10/2012
  */
