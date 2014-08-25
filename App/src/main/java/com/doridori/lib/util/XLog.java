@@ -41,7 +41,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS)
         {
             Trace trace = getTrace();
-            Log.w(trace.clazz, getTrace().trace + text);
+            Log.w(trace.clazz, trace.trace + text);
         }
     }
 
@@ -50,7 +50,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO)
         {
             Trace trace = getTrace();
-            Log.i(trace.clazz, getTrace().trace + text);
+            Log.i(trace.clazz, trace.trace + text);
         }
     }
 
@@ -59,7 +59,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO_DEBUG)
         {
             Trace trace = getTrace();
-            Log.d(trace.clazz, getTrace().trace + "<method>");
+            Log.d(trace.clazz, trace.trace + "<method>");
         }
     }
 
@@ -68,7 +68,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO_DEBUG)
         {
             Trace trace = getTrace();
-            Log.d(obj.toString(), getTrace().trace);
+            Log.d(obj.toString(), trace.trace);
         }
     }
 
@@ -77,7 +77,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO_DEBUG)
         {
             Trace trace = getTrace();
-            Log.d(trace.clazz, getTrace().trace + text);
+            Log.d(trace.clazz, trace.trace + text);
         }
     }
 
@@ -87,7 +87,7 @@ public class XLog
         {
             Trace trace = getTrace();
             Log.d(trace.clazz, "");//blank line
-            Log.d(trace.clazz, getTrace().trace + text);
+            Log.d(trace.clazz, trace.trace + text);
         }
     }
 
@@ -96,7 +96,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO_DEBUG)
         {
             Trace trace = getTrace();
-            Log.d(tag, getTrace().trace + text);
+            Log.d(tag, trace.trace + text);
         }
     }
 
@@ -105,7 +105,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ERRORS_WARNINGS_INFO_DEBUG)
         {
             Trace trace = getTrace();
-            Log.d(obj.getClass().getName(), getTrace().trace + text);
+            Log.d(obj.getClass().getName(), trace.trace + text);
         }
     }
 
@@ -114,7 +114,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ALL)
         {
             Trace trace = getTrace();
-            Log.v(trace.clazz, getTrace().trace + "<method>");
+            Log.v(trace.clazz, trace.trace + "<method>");
         }
     }
 
@@ -123,7 +123,7 @@ public class XLog
         if (LOGGING_LEVEL_FILTER >= ALL)
         {
             Trace trace = getTrace();
-            Log.v(trace.clazz, getTrace().trace + text);
+            Log.v(trace.clazz, trace.trace + text);
         }
     }
 
