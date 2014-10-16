@@ -47,6 +47,8 @@ import com.example.androidutils.app.R;
  * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
  *
  * Similar to https://github.com/medyo/dynamicbox
+ *
+ * It may be worth switching to flow and using differnt views for states via that - more flexibility and can plug in to presentor logic a bit more easily
  */
 public class StatefulFrameLayout extends FrameLayout
 {
