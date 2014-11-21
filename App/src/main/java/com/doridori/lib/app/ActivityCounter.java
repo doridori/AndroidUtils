@@ -28,6 +28,9 @@ import de.greenrobot.event.EventBus;
  * onStop is called before onStart of the next, which breaks this count. I have introduced a delay timer for after {@link #activityStopped()} is called to get around this.
  *
  * See http://stackoverflow.com/questions/4414171/how-to-detect-when-an-android-app-goes-to-the-background-and-come-back-to-the-fo for a discussion on this
+ *
+ * If targeting 14+ a global Activity lifecycle counter can be registered via Application.registerOnActivityLifecycleListener() but the below timer will still need to be used.
+ * See http://steveliles.github.io/is_my_android_app_currently_foreground_or_background.html
  */
 public class ActivityCounter
 {
