@@ -49,6 +49,8 @@ import com.example.androidutils.app.R;
  * Similar to https://github.com/medyo/dynamicbox
  *
  * It may be worth switching to flow and using differnt views for states via that - more flexibility and can plug in to presentor logic a bit more easily
+ * 
+ * Could extend ViewAnimator instead to add easy transition anims
  */
 public class StatefulFrameLayout extends FrameLayout
 {
