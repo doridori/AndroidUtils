@@ -75,7 +75,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/source" />
       <excludeFolder url="file://$MODULE_DIR$/build/symbols" />
     </content>
-    <orderEntry type="jdk" jdkName="Android 19 KK" jdkType="Android SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="mimecraft-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="annotations-12.0" level="project" />
