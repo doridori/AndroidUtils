@@ -29,24 +29,25 @@ import android.widget.TextView;
 import com.example.androidutils.app.R;
 
 
+
 /**
  * <p>Like a normal frameLayout apart from this will swap out its views depending on some data state.<p/>
  *
- * <p>You can pass in layout file ids to the empty and loading resId xml attributes and an id into 
- * the content view attr<p/>
+ * <p>You MUST specify a containing view id as the contentId via xml. You can optionally pass in layout 
+ * file ids to the empty / loading / error resId xml attributes if needed - if not defaults will be used<p/>
  *
  * <p>If you supply your own error layout it must have a textView with the id 'R.id.state_error_text'<p/>
  *
  * <p>If your going to use the same loading / error / empty views throughout the app (with different text)
- * just set them in the source below and make sure the contents ids for the textViews match. Could 
+ * just set them in the source below and make sure the contents ids for the textViews match. Could
  * make this better by setting default layout id in theme. Can apply in style also.<p/>
  *
  * <p>Will auto hide all children on start<p/>
  *
- * <p>Animations can be setup but using layoutTransitions = true in the manifest (unless they have 
+ * <p>Animations can be setup but using layoutTransitions = true in the manifest (unless they have
  * been globally disabled in the user settings)<p/>
  *
- * <p>If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all 
+ * <p>If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all
  * children's state will still be saved<p/>
  *
  * <p>Similar to https://github.com/medyo/dynamicbox</p>
