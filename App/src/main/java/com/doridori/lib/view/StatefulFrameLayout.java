@@ -1,5 +1,5 @@
 /**
- Copyright [2011] [Dorian Cussen]
+ Copyright [2015] [Dorian Cussen]
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -30,27 +30,28 @@ import com.example.androidutils.app.R;
 
 
 /**
- * Like a normal frameLayout apart from this will swap out its views
- * depending on some data state.<p/>
+ * <p>Like a normal frameLayout apart from this will swap out its views depending on some data state.<p/>
  *
- * You should pass in layout file ids to the empty and loading resId xml
- * attrbutes and an id into the content view attr<p/>
+ * <p>You can pass in layout file ids to the empty and loading resId xml attributes and an id into 
+ * the content view attr<p/>
  *
- * If you supply your own error layout it must have a textView with the id 'R.id.state_error_text'<p/>
+ * <p>If you supply your own error layout it must have a textView with the id 'R.id.state_error_text'<p/>
  *
- * If your going to use the same loading / error / empty views throughout the app (with differnt text) just set them in the source below and make sure the contents ids for the textViews match. Could make this better by setting default layout id in theme. Can apply in style also.<p/>
+ * <p>If your going to use the same loading / error / empty views throughout the app (with different text)
+ * just set them in the source below and make sure the contents ids for the textViews match. Could 
+ * make this better by setting default layout id in theme. Can apply in style also.<p/>
  *
- * Will auto hide all children on start<p/>
+ * <p>Will auto hide all children on start<p/>
  *
- * Animations can be setup but using layoutTransitions = true in the manifest (unless they have been globally disabled in the user settings)<p/>
+ * <p>Animations can be setup but using layoutTransitions = true in the manifest (unless they have 
+ * been globally disabled in the user settings)<p/>
  *
- * If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all childrens state will still be saved<p/>
+ * <p>If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all 
+ * children's state will still be saved<p/>
  *
- * Similar to https://github.com/medyo/dynamicbox
- *
- * It may be worth switching to flow and using differnt views for states via that - more flexibility and can plug in to presentor logic a bit more easily
+ * <p>Similar to https://github.com/medyo/dynamicbox</p>
  * 
- * Could extend ViewAnimator instead to add easy transition anims
+ * <p>Could extend ViewAnimator instead to add easy transition anims</p>
  */
 public class StatefulFrameLayout extends FrameLayout
 {
