@@ -59,7 +59,7 @@ public class StatefulFrameLayout extends FrameLayout
     /**
      * WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
      * <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
-     * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
+     * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class OR use animateLayoutCanges on > 16. Prob best
      * to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
      * to do with view invlidation as a PTR etc will then show the view<p/>
      */
