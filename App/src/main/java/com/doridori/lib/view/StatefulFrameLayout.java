@@ -140,11 +140,8 @@ public class StatefulFrameLayout extends FrameLayout
         showViewBasedOnState();
     }
 
-    /**
-     * @param msg can not be null
-     */
-    public void showErrorViewWithMsg(String msg) {
-
+    public void showErrorViewWithMsg(String msg, OnClickListener onClickListener) {
+        mErrorView.setOnClickListener(onClickListener);
         mCurrentViewState = ViewState.ERROR;
         mErrorText = msg;
 
@@ -162,11 +159,6 @@ public class StatefulFrameLayout extends FrameLayout
 
         showViewBasedOnState();
         setEmptyText(mEmptyText);
-    }
-
-    public void setOnClickForError(OnClickListener onClickListener)
-    {
-        mErrorView.setOnClickListener(onClickListener);
     }
 
     public ViewState getViewState() {
