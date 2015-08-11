@@ -33,8 +33,9 @@ import com.example.androidutils.app.R;
 /**
  * <p>Like a normal frameLayout apart from this will swap out its views depending on some data state.<p/>
  *
- * <p>You MUST specify a containing view id as the contentId via xml. You can optionally pass in layout 
- * file ids to the empty / loading / error resId xml attributes if needed - if not defaults will be used<p/>
+ * <p>You MUST specify a containing view id as the contentId via xml.</p>
+ *
+ * <p>You can optionally pass in child view ids for the empty / loading / error resId xml attributes if needed - if not the xml defaults will be used<p/>
  *
  * <p>If you supply your own error layout it must have a textView with the id 'R.id.state_error_text'<p/>
  *
@@ -44,14 +45,14 @@ import com.example.androidutils.app.R;
  *
  * <p>Will auto hide all children on start<p/>
  *
- * <p>Animations can be setup but using layoutTransitions = true in the manifest (unless they have
+ * <p>Animations can be setup by using layoutTransitions = true in the manifest (unless they have
  * been globally disabled in the user settings)<p/>
  *
  * <p>If you want to avoid retaining visibility state you can use View.saveEnabled="false" - all
  * children's state will still be saved<p/>
  *
- * <p>Similar to https://github.com/medyo/dynamicbox</p>
- * 
+ * <p>NOTES</p>
+ * <p>Similar to https://github.com/medyo/dynamicbox</p> although this came much earlier!
  * <p>Could extend ViewAnimator instead to add easy transition anims</p>
  */
 public class StatefulFrameLayout extends FrameLayout
@@ -59,18 +60,50 @@ public class StatefulFrameLayout extends FrameLayout
     /**
      * WARNING - Samsung s3 running 4.0.4 (possibly a 4.0.4 bug) cannot handle a view changing from GONE to VISIBLE with
      * <code>animateLayoutChanges=true</code>. As this is a Framelayout you can either change to INVISIBLE instead of GONE
-     * (less efficent as will still be measured when not vis) OR implement custom show hide anims for this class OR use animateLayoutCanges on > 16. Prob best
+     * (less efficient as will still be measured when not vis) OR implement custom show hide anims for this class. Prob best
      * to just not use animateLayoutChanges. Custom animations solution is untested however :)<b/> Think this has something
-     * to do with view invlidation as a PTR etc will then show the view<p/>
+     * to do with view invalidation as a PTR etc will then show the view<p/>
      */
     private static final int HIDDEN_VIEW_STATE = View.INVISIBLE;
+    private static final int NO_ID = -1;
+
+    //==================================================================//
+    // Fields
+    //==================================================================//
 
     private ViewState mCurrentViewState = ViewState.NOT_INIT;
 
-    private int mLoadingResId, mEmptyResId, mContentResId, mErrorResId;
+    private int mLoadingViewId, mEmptyViewId, mContentViewId, mErrorViewId;
     private View mLoadingView, mEmptyView, mContentView, mErrorView;
     private String mErrorText = null;
     private String mEmptyText;
+
+    //==================================================================//
+    // ViewState enum
+    //==================================================================//
+
+    public static enum ViewState{
+        /**
+         * Loading has not started yet
+         */
+        NOT_INIT, //default
+        /**
+         * Loading started
+         */
+        LOADING,
+        /**
+         * Loading finished and empty data
+         */
+        EMPTY,
+        /**
+         * Loading finished with success
+         */
+        CONTENT,
+        /**
+         * Loading finished with error
+         */
+        ERROR
+    }
 
     //=====================================================================================
     // CONSTRUCTORS
@@ -94,6 +127,51 @@ public class StatefulFrameLayout extends FrameLayout
 
         super(context);
         throw new RuntimeException("Use a constructor with attrs");
+    }
+
+    //==================================================================//
+    // PUBLIC
+    //==================================================================//
+
+    public void setViewState(ViewState newViewState) {
+
+        mCurrentViewState = newViewState;
+
+        showViewBasedOnState();
+    }
+
+    /**
+     * @param msg can not be null
+     */
+    public void showErrorViewWithMsg(String msg) {
+
+        mCurrentViewState = ViewState.ERROR;
+        mErrorText = msg;
+
+        showViewBasedOnState();
+        setErrorText(mErrorText);
+    }
+
+    /**
+     * @param msg can not be null
+     */
+    public void setEmptyViewWithMsg(String msg) {
+
+        mCurrentViewState = ViewState.EMPTY;
+        mEmptyText = msg;
+
+        showViewBasedOnState();
+        setEmptyText(mEmptyText);
+    }
+
+    public void setOnClickForError(OnClickListener onClickListener)
+    {
+        mErrorView.setOnClickListener(onClickListener);
+    }
+
+    public ViewState getViewState() {
+
+        return mCurrentViewState;
     }
 
     //=====================================================================================
@@ -176,30 +254,24 @@ public class StatefulFrameLayout extends FrameLayout
         }
     }
 
+
+
     //=====================================================================================
-    // OTHERS
+    // PRIVATE
     //=====================================================================================
 
     private void getCustomAttrs(Context context, AttributeSet attrs) {
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.StatefulFrameLayout);
 
-        // get state layout res id's if present, else use default
-        mEmptyResId = array.getResourceId(
-                R.styleable.StatefulFrameLayout_emptyView,
-                R.layout.element_data_state_empty);
-
-        mLoadingResId = array.getResourceId(
-                R.styleable.StatefulFrameLayout_loadingView,
-                R.layout.element_data_state_loading);
-
-        mErrorResId = array.getResourceId(
-                R.styleable.StatefulFrameLayout_errorView,
-                R.layout.element_data_state_error);
+        // get view ids in layout if defined
+        mEmptyViewId = array.getResourceId(R.styleable.StatefulFrameLayout_emptyView, NO_ID);
+        mLoadingViewId = array.getResourceId(R.styleable.StatefulFrameLayout_loadingView, NO_ID);
+        mErrorViewId = array.getResourceId(R.styleable.StatefulFrameLayout_errorView, NO_ID);
 
         if (!array.hasValue(R.styleable.StatefulFrameLayout_contentView))
             throw new RuntimeException("need to set contentView attr");
-        mContentResId = array.getResourceId(R.styleable.StatefulFrameLayout_contentView, -1);
+        mContentViewId = array.getResourceId(R.styleable.StatefulFrameLayout_contentView, NO_ID);
 
         array.recycle();
     }
@@ -214,66 +286,34 @@ public class StatefulFrameLayout extends FrameLayout
 
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //content view ref is obtained on first state manipulation. This is becuase this method is called in the
-        // contructor which would be before any XML views have actually been inflated and added by the system.
-        // and method call after the LayoutInflators inflate call has returned will have a valid contentView ref (as long as the xml specifies it)
+        // inflate views from xml if no local view ids have been specified.
+        // Specified ids are obtained on first state manipulation. This is because this method is called in the
+        // constructor which would be before any XML views have actually been inflated and added by the system.
+        // and method call after the LayoutInflaters inflate call has returned will have a valid contentView ref (as long as the xml specifies it)
 
-        mLoadingView = layoutInflater.inflate(mLoadingResId, this, false);
-        mLoadingView.setVisibility(HIDDEN_VIEW_STATE);
-        addView(mLoadingView);
+        if(mLoadingViewId == NO_ID)
+        {
+            mLoadingView = layoutInflater.inflate(R.layout.element_data_state_loading, this, false);
+            mLoadingView.setVisibility(HIDDEN_VIEW_STATE);
+            addView(mLoadingView);
+        }
 
-        mEmptyView = layoutInflater.inflate(mEmptyResId, this, false);
-        mEmptyView.setVisibility(HIDDEN_VIEW_STATE);
-        addView(mEmptyView);
+        if(mEmptyViewId == NO_ID)
+        {
+            mEmptyView = layoutInflater.inflate(R.layout.element_data_state_empty, this, false);
+            mEmptyView.setVisibility(HIDDEN_VIEW_STATE);
+            addView(mEmptyView);
+        }
 
-        mErrorView = layoutInflater.inflate(mErrorResId, this, false);
-        mErrorView.setVisibility(HIDDEN_VIEW_STATE);
-        addView(mErrorView);
+        if(mErrorViewId == NO_ID)
+        {
+            mErrorView = layoutInflater.inflate(R.layout.element_data_state_error, this, false);
+            mErrorView.setVisibility(HIDDEN_VIEW_STATE);
+            addView(mErrorView);
+        }
     }
 
-    public void setViewState(ViewState newViewState) {
-        setViewState(newViewState, true);
-    }
 
-    /**
-     * @param newViewState
-     * @param animate true if should animate when showing content
-     */
-    public void setViewState(ViewState newViewState, boolean animate) {
-
-        mCurrentViewState = newViewState;
-
-        showViewBasedOnState(animate);
-    }
-
-    /**
-     * @param msg can not be null
-     */
-    public void showErrorViewWithMsg(String msg) {
-
-        mCurrentViewState = ViewState.ERROR;
-        mErrorText = msg;
-
-        showViewBasedOnState(true);
-        setErrorText(mErrorText);
-    }
-
-    /**
-     * @param msg can not be null
-     */
-    public void setEmptyViewWithMsg(String msg) {
-
-        mCurrentViewState = ViewState.EMPTY;
-        mEmptyText = msg;
-
-        showViewBasedOnState(true);
-        setEmptyText(mEmptyText);
-    }
-
-    public void setOnClickForError(OnClickListener onClickListener)
-    {
-        mErrorView.setOnClickListener(onClickListener);
-    }
 
     /**
      * If a custom error view has been used it will have to include a textView with the ID R.id.state_error_text for
@@ -297,28 +337,9 @@ public class StatefulFrameLayout extends FrameLayout
         emptyTxtView.setText(emptyText);
     }
 
-    public ViewState getViewState() {
-
-        return mCurrentViewState;
-    }
-
-    /**
-     * @param animate true if should animate when showing content
-     */
-    private void showViewBasedOnState(boolean animate) {
-
-        // first time this is called contentView ref should/will be null - see #inflateStateViews
-        if(mContentView == null)
-        {
-            mContentView = findViewById(mContentResId);
-
-            if (mContentView == null) {
-                throw new NullPointerException("contentView cannot be null, have you set the contentView attribute");
-            }
-
-            if(mContentView.getVisibility() == View.VISIBLE)
-                throw new RuntimeException("need to set child view to hidden (GONE | INVISIBLE) state in xml or will flicker");
-        }
+    private void showViewBasedOnState()
+    {
+        ensureStateViewsArePresent();
 
         switch (mCurrentViewState) {
             case NOT_INIT:
@@ -367,27 +388,42 @@ public class StatefulFrameLayout extends FrameLayout
         invalidate();
     }
 
-    public static enum ViewState{
-        /**
-         * Loading has not started yet
-         */
-        NOT_INIT, //default
-        /**
-         * Loading started
-         */
-        LOADING,
-        /**
-         * Loading finished and empty data
-         */
-        EMPTY,
-        /**
-         * Loading finished with success
-         */
-        CONTENT,
-        /**
-         * Loading finished with error
-         */
-        ERROR
+    private void performViewChecks(View view, String debugName)
+    {
+        if (view == null) {
+            throw new NullPointerException(debugName+" cannot be null, have you set the id correctly for this state view? A content Id is mandatory, other view states ids are optional");
+        }
+
+        if(view.getVisibility() == View.VISIBLE)
+            throw new RuntimeException(debugName+" | need to set child view to hidden (GONE | INVISIBLE) state in xml or will flicker");
+    }
+
+    private void ensureStateViewsArePresent()
+    {
+        // first time this is called contentView ref should/will be null - see #inflateStateViews
+        if(mContentView == null)
+        {
+            mContentView = findViewById(mContentViewId);
+            performViewChecks(mContentView, "Content");
+        }
+
+        if(mLoadingView == null)
+        {
+            mLoadingView = findViewById(mLoadingViewId);
+            performViewChecks(mLoadingView, "Loading");
+        }
+
+        if(mErrorView == null)
+        {
+            mErrorView = findViewById(mErrorViewId);
+            performViewChecks(mErrorView, "Error");
+        }
+
+        if(mEmptyView == null)
+        {
+            mEmptyView = findViewById(mEmptyViewId);
+            performViewChecks(mEmptyView, "Empty");
+        }
     }
 
 }
