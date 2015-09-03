@@ -55,6 +55,7 @@ import com.example.androidutils.app.R;
  * <p>Similar to https://github.com/medyo/dynamicbox</p> although this came much earlier!
  * <p>Could extend ViewAnimator instead to add easy transition anims</p>
  */
+@SuppressLint("WrongConstant") //to ignore lint warnings for visibility passing
 public class StatefulFrameLayout extends FrameLayout
 {
     /**
